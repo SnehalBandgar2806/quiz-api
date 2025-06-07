@@ -28,19 +28,16 @@ const authRoutes = require('./routes/auth');        // your login/register route
 const categoryRoutes = require('./routes/category'); // your category routes
 
 // Use routes with correct prefixes
-app.use('/api/auth', authRoutes);          // changed prefix to /api/auth
+app.use('/api/auth', authRoutes);
 app.use('/api/categories', categoryRoutes);
 
-// Connect to MongoDB Atlas
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-.then(() => console.log('MongoDB connected'))
-.catch(err => console.error('MongoDB connection error:', err));
+// ✅ Connect to MongoDB Atlas (no deprecated options)
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log('MongoDB connected'))
+  .catch(err => console.error('MongoDB connection error:', err));
 
 // Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
