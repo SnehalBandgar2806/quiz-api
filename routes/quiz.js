@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Quiz = require('../models/quiz'); // Adjust path if needed
+const Quiz = require('../models/Quiz'); // Adjust path if needed
 
 // POST /api/quizzes – Create a new quiz
 router.post('/', async (req, res) => {
