@@ -16,7 +16,15 @@ router.post('/join', async (req, res) => {
 
   const now = Date.now();
 
-  // Initialize Map for quiz if not already
+  // 🧹 Remove the user from any other quiz they were part of
+  for (const [existingQuizId, userMap] of liveUsers.entries()) {
+    if (userMap.has(userId) && existingQuizId !== quizId) {
+      userMap.delete(userId);
+      console.log(`🔁 Removed user ${userId} from quiz ${existingQuizId}`);
+    }
+  }
+
+  // Initialize Map for current quiz if not already
   if (!liveUsers.has(quizId)) {
     liveUsers.set(quizId, new Map());
   }
@@ -26,6 +34,7 @@ router.post('/join', async (req, res) => {
 
   res.json({ success: true });
 });
+
 // ✅ GET /api/live/count/:quizId – returns live user count + names
 router.get('/count/:quizId', async (req, res) => {
   const quizId = req.params.quizId;
