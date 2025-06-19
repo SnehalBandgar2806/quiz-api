@@ -11,30 +11,36 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(helmet()); // Security headers
+app.use(helmet());
 
-// Rate limiting to prevent brute-force or DoS attacks
+// Rate limiting
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
+  windowMs: 15 * 60 * 1000,
+  max: 100,
 });
 app.use(limiter);
 
-// Serve uploaded images statically
+// Static folder for uploads
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Import routes
-const authRoutes = require('./routes/auth');        // your login/register routes
-const categoryRoutes = require('./routes/category'); // your category routes
+const authRoutes = require('./routes/auth');
+const categoryRoutes = require('./routes/category');
+const quizRoutes = require('./routes/quiz');
+// ✅ Keep only this
+const liveUserRoutes = require('./routes/liveUsers');
 
-// Use routes with correct prefixes
+// Use routes
 app.use('/api/auth', authRoutes);
 app.use('/api/categories', categoryRoutes);
+app.use('/api/quizzes', quizRoutes);
 
-// ✅ Connect to MongoDB Atlas (no deprecated options)
+app.use('/api/live', liveUserRoutes);
+
+// MongoDB connection
 mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('MongoDB connected'))
-  .catch(err => console.error('MongoDB connection error:', err));
+  .then(() => console.log('✅ MongoDB connected'))
+  .catch((err) => console.error('❌ MongoDB connection error:', err));
 
 // Start server
 const PORT = process.env.PORT || 5000;
